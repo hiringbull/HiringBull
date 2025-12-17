@@ -1,0 +1,45 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# Env files
+.env
+.env.*
+
+# Logs
+logs
+*.log
+pids
+*.pid
+*.seed
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Build output
+dist/
+build/
+.out/
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
+
+# Misc
+.cache/
+*.tgz
+.env.local
+
+# Next.js, Nuxt, etc. (if present)
+.next/
+.nuxt/
+
+# Mac
+*.DS_Store
