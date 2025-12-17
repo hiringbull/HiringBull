@@ -1,0 +1,26 @@
+{
+  "name": "hiringbull-server",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --enable-source-maps src/index.js",
+    "dev": "nodemon --watch src --exec node --enable-source-maps src/index.js",
+    "lint": "eslint ."
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.2",
+    "helmet": "^6.0.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "nodemon": "^2.0.20"
+  }
+}
