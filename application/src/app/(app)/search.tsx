@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { Pressable, TextInput } from 'react-native';
+import { Image } from 'expo-image';
+import React from 'react';
+import { Pressable } from 'react-native';
 
 import {
-  Button,
   FocusAwareStatusBar,
   SafeAreaView,
   ScrollView,
@@ -11,129 +11,67 @@ import {
   View,
 } from '@/components/ui';
 
-const RECENT_SEARCHES = [
-  { id: '1', query: 'React Native Developer', emoji: '📱' },
-  { id: '2', query: 'Senior Frontend Engineer', emoji: '💻' },
-  { id: '3', query: 'Mobile Engineer', emoji: '🚀' },
-] as const;
-
-const POPULAR_CATEGORIES = [
-  { id: 'engineering', label: 'Engineering', emoji: '⚙️' },
-  { id: 'design', label: 'Design', emoji: '🎨' },
-  { id: 'product', label: 'Product', emoji: '📊' },
-  { id: 'marketing', label: 'Marketing', emoji: '📢' },
-] as const;
-
-type CategoryId = (typeof POPULAR_CATEGORIES)[number]['id'];
-
-type CategoryChipProps = {
-  label: string;
-  emoji: string;
-  isSelected: boolean;
-  onPress: () => void;
+type Company = {
+  id: string;
+  name: string;
 };
 
-function CategoryChip({
-  label,
-  emoji,
-  isSelected,
-  onPress,
-}: CategoryChipProps) {
-  return (
-    <Pressable
-      onPress={onPress}
-      className={`mb-2 mr-2 flex-row items-center rounded-xl border-2 px-4 py-3 ${
-        isSelected
-          ? 'border-primary-500 bg-primary-500'
-          : 'border-neutral-200 dark:border-neutral-700'
-      }`}
-    >
-      <Text className="mr-2 text-lg">{emoji}</Text>
-      <Text
-        className={`font-medium ${isSelected ? 'text-white' : 'text-neutral-700 dark:text-neutral-300'}`}
-      >
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
+const COMPANIES: Company[] = [
+  { id: '1', name: 'Google' },
+  { id: '2', name: 'Meta' },
+  { id: '3', name: 'Amazon' },
+  { id: '4', name: 'Microsoft' },
+];
 
-type RecentSearchItemProps = {
-  query: string;
-  emoji: string;
-};
-
-function RecentSearchItem({ query, emoji }: RecentSearchItemProps) {
+function CompanyCard({ name }: { name: string }) {
   return (
-    <Pressable className="mb-2 flex-row items-center rounded-xl border border-neutral-200 p-4 dark:border-neutral-700">
-      <Text className="mr-3 text-xl">{emoji}</Text>
-      <Text className="flex-1 text-base">{query}</Text>
-      <Ionicons name="arrow-forward" size={18} color="#a3a3a3" />
+    <Pressable className="mb-4 flex-row items-center justify-between rounded-xl border-l-4 border-emerald-500 bg-white p-5 shadow-sm dark:bg-neutral-900">
+      <View>
+        <Text className="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+          Company
+        </Text>
+        <Text className="text-lg font-bold text-neutral-900 dark:text-white">
+          {name}
+        </Text>
+      </View>
+      <View className="size-10 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/20">
+        <Ionicons name="chatbubbles-outline" size={20} color="#10b981" />
+      </View>
     </Pressable>
   );
 }
 
 export default function Search() {
-  const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(
-    null
-  );
-
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-neutral-900">
+    <SafeAreaView
+      className="flex-1 bg-white dark:bg-neutral-950"
+      edges={['top']}
+    >
       <FocusAwareStatusBar />
-      <View className="flex-1 px-6 pt-4">
-        <Text className="mb-2 text-3xl font-bold">Search Jobs</Text>
-        <Text className="mb-6 text-base text-neutral-500">
-          Find your dream job
-        </Text>
-
-        <View className="mb-6 flex-row items-center rounded-xl border border-neutral-200 bg-neutral-100 px-4 dark:border-neutral-700 dark:bg-neutral-800">
-          <Ionicons name="search-outline" size={20} color="#a3a3a3" />
-          <TextInput
-            value={search}
-            onChangeText={setSearch}
-            placeholder="Job title, company, or keyword..."
-            placeholderTextColor="#a3a3a3"
-            className="ml-3 flex-1 py-4 text-base text-black dark:text-white"
-          />
-          {search.length > 0 && (
-            <Pressable onPress={() => setSearch('')}>
-              <Ionicons name="close-circle" size={20} color="#a3a3a3" />
-            </Pressable>
-          )}
+      <View className="flex-1 px-5 pt-6">
+        <View className="mb-8 flex-row items-center justify-between">
+          <View className="mr-4 flex-1">
+            <Text className="text-3xl font-black text-neutral-900 dark:text-white">
+              Discussion
+            </Text>
+            <Text className="mt-2 text-base font-medium leading-6 text-neutral-500">
+              Send up to 3 outreach requests per month to employees and HRs with
+              your peers -- strictly no spam
+            </Text>
+          </View>
+          <View className="rounded-2xl p-2">
+            <Image
+              source="https://cdn-icons-png.flaticon.com/512/7208/7208232.png"
+              style={{ width: 44, height: 44 }}
+              contentFit="contain"
+            />
+          </View>
         </View>
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-          <Text className="mb-3 text-lg font-semibold">Categories</Text>
-          <View className="mb-6 flex-row flex-wrap">
-            {POPULAR_CATEGORIES.map((cat) => (
-              <CategoryChip
-                key={cat.id}
-                label={cat.label}
-                emoji={cat.emoji}
-                isSelected={selectedCategory === cat.id}
-                onPress={() =>
-                  setSelectedCategory(
-                    selectedCategory === cat.id ? null : cat.id
-                  )
-                }
-              />
-            ))}
-          </View>
-
-          <Text className="mb-3 text-lg font-semibold">Recent Searches</Text>
-          <View className="mb-6">
-            {RECENT_SEARCHES.map((item) => (
-              <RecentSearchItem
-                key={item.id}
-                query={item.query}
-                emoji={item.emoji}
-              />
-            ))}
-          </View>
-
-          <Button label="Search Jobs" variant="default" size="lg" />
+          {COMPANIES.map((company) => (
+            <CompanyCard key={company.id} name={company.name} />
+          ))}
         </ScrollView>
       </View>
     </SafeAreaView>
