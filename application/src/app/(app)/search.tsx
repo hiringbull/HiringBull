@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import React from 'react';
 import { Pressable } from 'react-native';
 
@@ -23,9 +22,9 @@ const COMPANIES: Company[] = [
   { id: '4', name: 'Microsoft' },
 ];
 
-function CompanyCard({ name }: { name: string }) {
+function DiscussionCard({ name }: { name: string }) {
   return (
-    <Pressable className="mb-4 flex-row items-center justify-between rounded-xl border-l-4 border-emerald-500 bg-white p-5 shadow-sm dark:bg-neutral-900">
+    <Pressable className="mb-4 flex-row items-center justify-between rounded-xl border border-neutral-200 bg-white p-5 shadow-md">
       <View>
         <Text className="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
           Company
@@ -48,8 +47,8 @@ export default function Search() {
       edges={['top']}
     >
       <FocusAwareStatusBar />
-      <View className="flex-1 px-5 pt-6">
-        <View className="mb-8 flex-row items-center justify-between">
+      <View className="flex-1 pt-6">
+        <View className="flex-row items-center justify-between px-5 pb-4 border-b border-neutral-200 shadow-sm bg-white dark:bg-neutral-950 dark:border-neutral-800">
           <View className="mr-4 flex-1">
             <Text className="text-3xl font-black text-neutral-900 dark:text-white">
               Discussion
@@ -59,18 +58,19 @@ export default function Search() {
               your peers -- strictly no spam
             </Text>
           </View>
-          <View className="rounded-2xl p-2">
-            <Image
-              source="https://cdn-icons-png.flaticon.com/512/7208/7208232.png"
-              style={{ width: 44, height: 44 }}
-              contentFit="contain"
-            />
-          </View>
         </View>
 
-        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        <ScrollView
+          className="flex-1"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingHorizontal: 20,
+            paddingBottom: 20,
+            paddingTop: 10,
+          }}
+        >
           {COMPANIES.map((company) => (
-            <CompanyCard key={company.id} name={company.name} />
+            <DiscussionCard key={company.id} name={company.name} />
           ))}
         </ScrollView>
       </View>
