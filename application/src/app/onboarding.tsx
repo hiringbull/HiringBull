@@ -116,9 +116,7 @@ function StepIndicator({ currentStep, totalSteps }: StepIndicatorProps) {
               <View
                 className="h-full rounded-full bg-black dark:bg-white"
                 style={{
-                  width: `${
-                    currentStep > step ? 100 : currentStep === step ? 50 : 0
-                  }%`,
+                  width: `${currentStep > step ? 100 : 0}%`,
                 }}
               />
             </View>
@@ -644,7 +642,8 @@ export default function Onboarding() {
         </View>
       </SafeAreaView>
 
-      {step === 1 ? (
+      {step === -1 ? (
+
         <KeyboardStickyView offset={{ closed: 0, opened: 0 }}>
           <View className="border-t border-neutral-200 bg-white px-6 pb-8 pt-4 dark:border-neutral-700 dark:bg-neutral-900">
             <Pressable
@@ -663,7 +662,7 @@ export default function Onboarding() {
               </Text>
             </Pressable>
           </View>
-        </KeyboardStickyView>
+         </KeyboardStickyView>
       ) : (
         <View className="border-t border-neutral-200 bg-white px-6 pb-8 pt-4 dark:border-neutral-700 dark:bg-neutral-900">
           {step === 3 && selectedCompanies.length > 0 && (
