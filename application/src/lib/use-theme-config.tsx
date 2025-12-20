@@ -7,6 +7,9 @@ import { useColorScheme } from 'nativewind';
 
 import colors from '@/components/ui/colors';
 
+// Set to true to enable dark mode support
+const DARK_MODE_ENABLED = false;
+
 const DarkTheme: Theme = {
   ..._DarkTheme,
   colors: {
@@ -23,7 +26,7 @@ const LightTheme: Theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: colors.primary[400],
+    primary: colors.primary[500],
     background: colors.white,
   },
 };
@@ -31,7 +34,9 @@ const LightTheme: Theme = {
 export function useThemeConfig() {
   const { colorScheme } = useColorScheme();
 
-  if (colorScheme === 'dark') return DarkTheme;
+  if (DARK_MODE_ENABLED && colorScheme === 'dark') {
+    return DarkTheme;
+  }
 
   return LightTheme;
 }

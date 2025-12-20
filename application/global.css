@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .card-shadow {
+    shadow-color: #000;
+    shadow-offset: 0px 0px;
+    shadow-opacity: 0.05;
+    shadow-radius: 6px;
+    elevation: 2;
+  }
+}
