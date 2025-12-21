@@ -63,7 +63,7 @@ function NotificationInitializer() {
       console.log('Push Token:', expoPushToken);
 
       // TODO: Replace with actual API endpoint
-      const API_URL = 'https://your-api.example.com/api/push-token';
+      const API_URL = 'https://madar-production.up.railway.app/api/users/devices/public/';
 
       fetch(API_URL, {
         method: 'POST',
