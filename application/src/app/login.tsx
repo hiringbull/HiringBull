@@ -52,9 +52,12 @@ export default function Login() {
     setError('');
 
     try {
+      const redirectUrl = AuthSession.makeRedirectUri();
+      console.log('Starting SSO flow with redirect URL:', redirectUrl);
+
       const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
         strategy: 'oauth_google',
-        redirectUrl: AuthSession.makeRedirectUri(),
+        redirectUrl,
       });
 
       if (createdSessionId) {
