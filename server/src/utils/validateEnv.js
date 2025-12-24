@@ -10,7 +10,6 @@ export const validateEnv = () => {
     const optional = [
         'CLERK_PUBLISHABLE_KEY',
         'CLERK_SECRET_KEY',
-        'INTERNAL_API_KEY',
         'CLERK_WEBHOOK_SECRET',
     ];
 
@@ -58,8 +57,5 @@ export const validateEnv = () => {
         console.log(`ℹ️  Clerk keys detected:`);
         console.log(`   - CLERK_PUBLISHABLE_KEY: ${pubKey ? pubKey.substring(0, 10) + '...' : 'MISSING'} (Length: ${pubKey?.length || 0})`);
         console.log(`   - CLERK_SECRET_KEY: ${secKey ? secKey.substring(0, 7) + '...' : 'MISSING'} (Length: ${secKey?.length || 0})`);
-    }
-    if (!process.env.INTERNAL_API_KEY) {
-        console.warn('ℹ️  INTERNAL_API_KEY missing: Admin routes (like POST /api/companies) will be bypassed.');
     }
 };

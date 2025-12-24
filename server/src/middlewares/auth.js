@@ -14,6 +14,7 @@ export const initClerk = clerkMiddleware();
  */
 export const requireAuth = (req, res, next) => {
     const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
+    console.log("IS DEV CHECK IS REQUIRE AUTH " , isDev)
     if (isDev && (!process.env.CLERK_PUBLISHABLE_KEY || !process.env.CLERK_SECRET_KEY)) {
         req.clerkUserId = 'mock_user_id';
         return next();
@@ -38,26 +39,6 @@ export const optionalAuth = (req, res, next) => {
     next();
 };
 
-/**
- * Middleware to require admin access via API key
- * For internal/bulk ingestion routes
- * Bypassed if INTERNAL_API_KEY is missing
- */
-export const requireApiKey = (req, res, next) => {
-    const apiKey = req.headers['x-api-key'];
-    const expectedKey = process.env.INTERNAL_API_KEY;
-
-    if (!expectedKey) {
-        console.warn('⚠️  INTERNAL_API_KEY not configured - bypassing API key check');
-        return next();
-    }
-
-    if (!apiKey || apiKey !== expectedKey) {
-        return res.status(401).json({ message: 'Invalid or missing API key' });
-    }
-
-    next();
-};
 
 export const getClerkUserId = (req) => {
     const auth = getAuth(req);
