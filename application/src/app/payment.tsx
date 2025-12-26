@@ -26,59 +26,25 @@ const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.8;
 const ITEM_SPACING = (width - CARD_WIDTH) / 2;
 
-const PLANS = [
-  {
-    id: 'starter',
-    title: 'Starter',
-    duration: '1 Month',
-    price: '₹249',
-    totalPrice: 249,
-    perMonth: '₹249/mo',
-    saveLabel: null,
-    features: [
-      'Early notifications to verified job openings',
-      'Ideal for trying the platform',
-    ],
-    color: '#3b82f6', // blue-500
-  },
-  {
-    id: 'popular',
-    title: 'Popular',
-    duration: '3 Months',
-    price: '₹199',
-    totalPrice: 597,
-    perMonth: '₹199/mo',
-    saveLabel: 'Save 20%',
-    popular: true,
-    features: [
-      'Early notifications to verified job openings',
-      'Get full refund if you get job in the time period',
-    ],
-    color: '#8b5cf6', // violet-500
-  },
-  {
-    id: 'best_value',
-    title: 'Best Value',
-    duration: '6 Months',
-    price: '₹169',
-    totalPrice: 1014,
-    perMonth: '₹169/mo',
-    saveLabel: 'Save 32%',
-    features: [
-      'Early notifications to verified job openings',
-      'Get full refund if you get job in the time period',
-      'Free mock interview if user receives an interview call from a top MNC',
-    ],
-    color: '#10b981', // emerald-500
-  },
-];
+
 
 const PlanCard = ({
   item,
   index,
   scrollX,
 }: {
-  item: (typeof PLANS)[0];
+  item: {
+    id: string;
+    title: string;
+    duration: string;
+    price: string;
+    totalPrice: number;
+    perMonth: string;
+    saveLabel: string | null;
+    features: string[];
+    color: string;
+    popular?: boolean;
+  };
   index: number;
   scrollX: Animated.SharedValue<number>;
 }) => {
@@ -185,10 +151,69 @@ const PlanCard = ({
 
 export default function Payment() {
   const router = useRouter();
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(1);
   const [code, setCode] = useState('');
-  const scrollX = useSharedValue(0);
+  const [isReferralApplied, setIsReferralApplied] = useState(false);
+  const scrollX = useSharedValue(CARD_WIDTH * 1);
   const { ref, present, dismiss } = useModal();
+
+  const activePlans = React.useMemo(() => {
+    const plans = [
+      {
+        id: 'starter',
+        title: 'Starter',
+        duration: '1 Month',
+        price: '₹249',
+        totalPrice: 249,
+        perMonth: '₹249/mo',
+        saveLabel: null,
+        features: [
+          'Early notifications to verified job openings',
+          'Ideal for trying the platform',
+        ],
+        color: '#000000', // black
+      },
+      {
+        id: 'popular',
+        title: 'Popular',
+        duration: '3 Months',
+        price: '₹199',
+        totalPrice: 597,
+        perMonth: '₹199/mo',
+        saveLabel: 'Save 20%',
+        popular: true,
+        features: [
+          'Early notifications to verified job openings',
+          'Get full refund if you get job in the time period',
+        ],
+        color: '#8b5cf6', // violet-500
+      },
+      {
+        id: 'best_value',
+        title: 'Best Value',
+        duration: '6 Months',
+        price: '₹169',
+        totalPrice: 1014,
+        perMonth: '₹169/mo',
+        saveLabel: 'Save 32%',
+        features: [
+          'Early notifications to verified job openings',
+          'Get full refund if you get job in the time period',
+          'Free mock interview if user receives an interview call from a top MNC',
+        ],
+        color: '#10b981', // emerald-500
+      },
+    ];
+
+    if (isReferralApplied) {
+      return plans.map((plan) => ({
+        ...plan,
+        totalPrice: plan.totalPrice - 50,
+      }));
+    }
+
+    return plans;
+  }, [isReferralApplied]);
 
   const handleScroll = useAnimatedScrollHandler((event) => {
     scrollX.value = event.contentOffset.x;
@@ -198,9 +223,16 @@ export default function Payment() {
 
   const handleApply = () => {
     Keyboard.dismiss();
-    Alert.alert('Applied', 'Code applied successfully', [
-      { text: 'OK', onPress: () => dismiss() }
-    ]);
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(code)) {
+      Alert.alert('Invalid Code', 'Please enter a valid referral code (email address)');
+      return;
+    }
+
+    setIsReferralApplied(true);
+    dismiss();
+    Alert.alert('Applied', 'Referral code applied successfully! ₹50 off.');
   };
 
   const handleSubscribe = () => {
@@ -208,7 +240,7 @@ export default function Payment() {
     router.replace('/');
   };
 
-  const activePlan = PLANS[activeIndex] || PLANS[0];
+  const activePlan = activePlans[activeIndex] || activePlans[0];
 
   return (
     <View className="flex-1 bg-white dark:bg-neutral-950">
@@ -224,8 +256,14 @@ export default function Payment() {
         </View>
 
         <Animated.FlatList
-          data={PLANS}
+          data={activePlans}
           horizontal
+          initialScrollIndex={1}
+          getItemLayout={(data, index) => ({
+            length: CARD_WIDTH,
+            offset: CARD_WIDTH * index,
+            index,
+          })}
           showsHorizontalScrollIndicator={false}
           snapToInterval={CARD_WIDTH}
           decelerationRate="fast"
@@ -247,7 +285,7 @@ export default function Payment() {
             className="mb-6 flex-row items-center justify-center gap-1.5"
           >
             <Text className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-              Have a referral code?
+              Have a referral code? Get flat ₹50 off
             </Text>
             <Text className="text-sm font-bold text-neutral-900 underline dark:text-white">
               Apply

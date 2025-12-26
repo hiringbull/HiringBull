@@ -33,25 +33,25 @@ const EXPERIENCE_LEVELS = [
   },
   {
     id: 'less-than-one',
-    label: 'Less than 1 Year',
+    label: 'Fresher or experience < 1 Year',
     description: 'Just starting out',
     image: Images.experience.lessThanOne,
   },
   {
     id: 'one-to-three',
-    label: '1 - 3 Years',
+    label: '1 - 3 Years Experience',
     description: 'Building experience',
     image: Images.experience.oneToThree,
   },
   {
     id: 'three-to-five',
-    label: '3 - 5 Years',
+    label: '3 - 5 Years Experience',
     description: 'Mid-level professional',
     image: Images.experience.threeToFive,
   },
   {
     id: 'five-plus',
-    label: '5+ Years',
+    label: '5+ Years Experience',
     description: 'Senior professional',
     image: Images.experience.fivePlus,
   },
@@ -240,7 +240,15 @@ function Step0({ data, onChange, onContinue, canContinue }: Step0Props) {
               ref={cgpaOrYoeRef}
               placeholder={data.isExperienced ? 'e.g. 3.5' : 'e.g. 9.0'}
               value={data.cgpaOrYoe}
-              onChangeText={(text) => updateField('cgpaOrYoe', text)}
+              onChangeText={(text) => {
+                if (data.isExperienced) {
+                  // Only allow numbers and decimal point
+                  const numericText = text.replace(/[^0-9.]/g, '');
+                  updateField('cgpaOrYoe', numericText);
+                } else {
+                  updateField('cgpaOrYoe', text);
+                }
+              }}
               keyboardType={data.isExperienced ? 'numeric' : 'default'}
               returnKeyType="next"
               onSubmitEditing={() => resumeLinkRef.current?.focus()}
@@ -306,6 +314,7 @@ type ExperienceCardProps = {
   onPress: () => void;
   label: string;
   image: ImageSourcePropType;
+  disabled?: boolean;
 };
 
 function ExperienceCard({
@@ -313,25 +322,31 @@ function ExperienceCard({
   onPress,
   label,
   image,
+  disabled,
 }: ExperienceCardProps) {
   return (
     <Pressable
       onPress={onPress}
-      className={`mb-3 flex-row items-center overflow-hidden rounded-2xl border bg-white p-3 dark:bg-neutral-800 ${
-        selected
-          ? 'border-2 border-black android:shadow-md ios:shadow-sm dark:border-white'
-          : 'border-neutral-200 android:shadow-md ios:shadow-sm dark:border-neutral-700'
+      disabled={disabled}
+      className={`mb-3 flex-row items-center overflow-hidden rounded-2xl border p-3 ${
+        disabled
+          ? 'bg-neutral-100 border-neutral-200 opacity-50 dark:bg-neutral-900 dark:border-neutral-800'
+          : selected
+          ? 'bg-white border-2 border-black android:shadow-md ios:shadow-sm dark:bg-neutral-800 dark:border-white'
+          : 'bg-white border-neutral-200 android:shadow-md ios:shadow-sm dark:bg-neutral-800 dark:border-neutral-700'
       }`}
     >
       <Image source={image} className="size-14 rounded-xl" contentFit="cover" />
       <Text className="ml-4 flex-1 text-lg font-semibold dark:text-white">
         {label}
       </Text>
-      <Ionicons
-        name={selected ? 'checkmark-circle' : 'checkmark-circle-outline'}
-        size={24}
-        color={selected ? '#000000' : '#d1d5db'}
-      />
+      {!disabled && (
+        <Ionicons
+          name={selected ? 'checkmark-circle' : 'checkmark-circle-outline'}
+          size={24}
+          color={selected ? '#000000' : '#d1d5db'}
+        />
+      )}
     </Pressable>
   );
 }
@@ -374,15 +389,20 @@ function Step1({ selectedLevel, onSelect, onBack }: Step1Props) {
           paddingBottom: 24,
         }}
       >
-        {EXPERIENCE_LEVELS.map((level) => (
-          <ExperienceCard
-            key={level.id}
-            selected={selectedLevel === level.id}
-            onPress={() => onSelect(level.id)}
-            label={level.label}
-            image={level.image}
-          />
-        ))}
+        {EXPERIENCE_LEVELS.map((level) => {
+          const isDisabled =
+            level.id === 'three-to-five' || level.id === 'five-plus';
+          return (
+            <ExperienceCard
+              key={level.id}
+              selected={selectedLevel === level.id}
+              onPress={() => onSelect(level.id)}
+              label={level.label}
+              image={level.image}
+              disabled={isDisabled}
+            />
+          );
+        })}
       </ScrollView>
     </Animated.View>
   );
@@ -550,7 +570,7 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [profileData, setProfileData] = useState<ProfileData>({
     name: '',
-    isExperienced: false,
+    isExperienced: true,
     collegeOrCompany: '',
     cgpaOrYoe: '',
     resumeLink: '',
